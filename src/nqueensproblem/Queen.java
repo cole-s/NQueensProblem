@@ -10,6 +10,11 @@ public class Queen {
     private int collumn; // stores collumn value of Queen
     private boolean validlocal; //is a valid location boolean for Queen object
     
+    public Queen(){
+        row = 0;
+        collumn = 1;
+        validlocal = false;
+    }// end of Constructor
     /**
      * Getters and Setters for the private variables in the Queen class
      * 
