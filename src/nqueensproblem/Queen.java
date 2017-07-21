@@ -7,14 +7,15 @@ package nqueensproblem;
  */
 public class Queen {
     private int row; // stores row value of Queen
-    private int collumn; // stores collumn value of Queen
+    private int column; // stores collumn value of Queen
     private boolean validlocal; //is a valid location boolean for Queen object
     
     public Queen(){
         row = 0;
-        collumn = 1;
+        column = 1;
         validlocal = false;
     }// end of Constructor
+    
     /**
      * Getters and Setters for the private variables in the Queen class
      * 
@@ -23,8 +24,8 @@ public class Queen {
      */
     public int getRow(){ return row; }
     public void setRow(int num){ row = num; }
-    public int getCollumn() { return collumn; }
-    public void setCollumn(int num){ collumn = num; }
+    public int getCollumn() { return column; }
+    public void setCollumn(int num){ column = num; }
     public boolean getValidLocal(){ return validlocal; }
     public void setValidLocal(boolean bool) { validlocal = bool; }
 } // end of Queen Class

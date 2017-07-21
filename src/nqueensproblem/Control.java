@@ -42,6 +42,12 @@ public class Control {
         createQueensArray(); // creates array of queens
     }// end of getNQueens
     
+    /**
+     * Method: createQueensArray()
+     * Purpose: creates an array of queens for assignment
+     * Parameters: none
+     * Returns: nothing
+     */
     private static void createQueensArray(){
         queens = new Queen[numberofqueens]; // creates array of queens
         
@@ -50,4 +56,33 @@ public class Control {
             queens[index].setRow(index+1); // sets queens in rows 1-N
         }// end of for loop
     }// end of createQueenArray();
+    
+    /**
+     * Method: solveNQueens
+     * Purpose: is to be called by the user to start solving the assignment with
+     *          size given to the numberofqueens variable
+     * Parameters: None
+     * Returns: Nothing
+     */
+    public void solveNQueens(){
+        
+    }// end of solveNQueens
+    
+    /**
+     * Method: checkCurrentQueen
+     * Purpose: is the currently moved queen in a position that is safe
+     *              -only need to check queens that are moved because by default
+     *                  all queens are in a position that is not valid
+     *              -Method will be broken up into three parts to check
+     *                  a) rows
+     *                  b) columns
+     *                  c) diagonals
+     * @param piece 
+     *          -is the current moving queen in the iteration method being 
+     *              used
+     * Returns: Nothing
+     */
+    private void checkCurrentQueen(Queen piece){
+        
+    }
 }// end of Control Class
