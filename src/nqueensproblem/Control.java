@@ -70,19 +70,99 @@ public class Control {
     
     /**
      * Method: checkCurrentQueen
-     * Purpose: is the currently moved queen in a position that is safe
+     * Purpose: is the currently moved queen in a position that is free of conflicts
      *              -only need to check queens that are moved because by default
      *                  all queens are in a position that is not valid
      *              -Method will be broken up into three parts to check
      *                  a) rows
      *                  b) columns
      *                  c) diagonals
-     * @param piece 
-     *          -is the current moving queen in the iteration method being 
-     *              used
+     * @param
      * Returns: Nothing
      */
-    private void checkCurrentQueen(Queen piece){
+    private void checkCurrentQueen(int current){
+        queens[current].setValidLocal(checkQueenHor(current)
+                                        +checkQueenVer(current)
+                                        +checkQueenDia(current));
+    }// end of checkCurrentQueen
+    
+    /**
+     * Method: checkQueenHor
+     * Purpose: To check the current queen's row to see if other queens are in
+     *          the same row
+     * @param current
+     *          -index of the current queen in the array
+     * @return  conflicts
+     *          -the number of other queens on the same row as the current queen
+     */
+    private int checkQueenHor(int current){
+        int conflicts = 0;
         
-    }
+        for(int index = 0; index < numberofqueens; index++){
+            if(index != current){
+                int row1 = queens[current].getRow();
+                int row2 = queens[index].getRow();
+                
+                if(row1 == row2)
+                    conflicts++;
+            }// end of if statement
+        }// end of for loop
+        
+        return conflicts;
+    }// end of checkQueenHor
+    
+    /**
+     * Method: checkQueenvar
+     * Purpose: checks the column of the current queen and returns the number of
+     *          other queens in the same column
+     * @param current
+     *          -index of the current queen in the array
+     * @return conflicts
+     *          -the number of other queens in the same column as the current
+     *              queen
+     */
+    private int checkQueenVer(int current){
+        int conflicts = 0;
+        
+        for(int index = 0; index < numberofqueens; index++){
+            if(index != current){
+                int col1 = queens[current].getColumn();
+                int col2 = queens[index].getColumn();
+                
+                if(col1 == col2)
+                    conflicts++;
+            }// end of if statement
+        }// end of for loop
+        
+        return conflicts;
+    }// end of checkQueenVer
+    
+    /**
+     * Method: checkQueenDia
+     * Purpose: checks the queens array for any queen that has other queens in 
+     *          the same diagonals
+     * @param current
+     *          -index of the current queen in the array
+     * @return conflicts
+     *          -the number of other queens
+     */
+    private int checkQueenDia(int current){
+        int conflicts = 0;
+        
+        for(int index = 0; index < numberofqueens; index++){
+            if(index != current){
+                int row1 = queens[current].getRow();
+                int row2 = queens[index].getRow();
+                int col1 = queens[current].getColumn();
+                int col2 = queens[index].getColumn();
+                
+                double slope = (double)(row1-row2)/(double)(col1-col2);
+                
+                if(Math.abs(slope) == 1)
+                    conflicts++;
+            }// end of if statement
+        }// end of for loop
+        
+        return conflicts;
+    }// end of checkQueenDia
 }// end of Control Class

@@ -8,12 +8,14 @@ package nqueensproblem;
 public class Queen {
     private int row; // stores row value of Queen
     private int column; // stores collumn value of Queen
-    private boolean validlocal; //is a valid location boolean for Queen object
+    private int validlocal; //is a valid location boolean for Queen object
+                            // 0 for yes and anything else is # of conflicts
+                            // with placement
     
     public Queen(){
         row = 0;
         column = 1;
-        validlocal = false;
+        validlocal = 0;
     }// end of Constructor
     
     /**
@@ -24,8 +26,9 @@ public class Queen {
      */
     public int getRow(){ return row; }
     public void setRow(int num){ row = num; }
-    public int getCollumn() { return column; }
-    public void setCollumn(int num){ column = num; }
-    public boolean getValidLocal(){ return validlocal; }
-    public void setValidLocal(boolean bool) { validlocal = bool; }
+    public int getColumn() { return column; }
+    public void setColumn(int num){ column = num; }
+    public int getValidLocal(){ return validlocal; }
+    public void setValidLocal(int conflicts) { validlocal = conflicts; }
+
 } // end of Queen Class
