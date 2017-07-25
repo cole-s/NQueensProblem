@@ -69,6 +69,28 @@ public class Control {
     }// end of solveNQueens
     
     /**
+     * Method: checkQueens
+     * Purpose: goes through the array of queens to find out if the problem has
+     *          been solved
+     * @param
+     * @return true - if all queens are in a valid location
+     *         false - if one or more queens have one or more conflicts with 
+     *                  other queens
+     */
+    private boolean checkQueens(){
+        for(int index = 0; index < numberofqueens; index++)
+            checkCurrentQueen(index); 
+        // end of for loop
+        for(int index = 0; index < numberofqueens; index++){
+            if(queens[index].getValidLocal() > 0)
+                return false;
+            // end of if statement
+        } // end of for loop
+        
+        return true;
+    }// end of checkQueens
+    
+    /**
      * Method: checkCurrentQueen
      * Purpose: is the currently moved queen in a position that is free of conflicts
      *              -only need to check queens that are moved because by default
