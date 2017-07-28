@@ -13,8 +13,8 @@ public class Queen {
                             // with placement
     
     public Queen(){
-        row = 0;
-        column = 1;
+        row = 1;
+        column = 0;
         validlocal = 0;
     }// end of Constructor
     
@@ -30,5 +30,10 @@ public class Queen {
     public void setColumn(int num){ column = num; }
     public int getValidLocal(){ return validlocal; }
     public void setValidLocal(int conflicts) { validlocal = conflicts; }
+    
+    public void printLocal(){
+        System.out.println("[" + row + ", " + column + "]" 
+                + "Conflicts: " + validlocal);
+    }
 
 } // end of Queen Class

@@ -1,6 +1,5 @@
 package nqueensproblem;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 /**
  * Control Class handles all user interface interactions. Makes calls to Queens
@@ -23,20 +22,22 @@ public class Control {
      */
     public static void getNQueens(){
         Scanner kin = new Scanner(System.in); // takes in user input
-        int num = 0; // number of queens from user
-        
+        String input = ""; // number of queens from user
+        int num = 0;
         while(num <= 3){
             try{
                 System.out.print("Please enter the number of "
                         + "queens greater than 3: ");
-                num = kin.nextInt();
-            } catch(InputMismatchException err){
-                System.out.println("Not a number.");
-            } // end of try-catch statement
-            
+                input = kin.next();
+                num = Integer.parseInt(input.trim());                
+                
             if(num <=3) // if num was not high enough
                 System.out.println("Number too low.");
             //end of if statement
+            } catch(NumberFormatException err){
+                System.out.println("Not a number.");
+            } // end of try-catch statement
+            
         }// end of while loop
         numberofqueens = num;
         createQueensArray(); // creates array of queens
@@ -53,7 +54,7 @@ public class Control {
         
         for(int index=0; index < numberofqueens; index++){
             queens[index] = new Queen(); // creates queen at index            
-            queens[index].setRow(index+1); // sets queens in rows 1-N
+            queens[index].setColumn(index+1); // sets queens in rows 1-N
         }// end of for loop
     }// end of createQueenArray();
     
@@ -64,9 +65,115 @@ public class Control {
      * Parameters: None
      * Returns: Nothing
      */
-    public void solveNQueens(){
-        
+    public static void solveNQueens(){
+        bruteForceMethod();
     }// end of solveNQueens
+    
+    private static void bruteForceMethod(){
+        moveQueen_BruteForce();
+        
+        String board_row = "";
+        boolean piece_located = false;
+        for(int row = 1; row <= numberofqueens; row++){
+            for(int col = 1; col <= numberofqueens; col++){
+                for(int index = 0; index < numberofqueens; index++){
+                    if(queens[index].getColumn() == col
+                            && queens[index].getRow() == row)
+
+                        piece_located = true;
+                }
+
+                if(piece_located){
+                    board_row += "1";
+                    piece_located = false;
+                }
+                else
+                    board_row += "0";
+            }
+            board_row += "\n";
+        }
+
+        System.out.println(board_row);
+    }// end of bruteForceMethod
+    
+    private static void moveQueen_BruteForce(){
+        int index = numberofqueens - 1;
+        int END_OF_BOARD = numberofqueens+1;
+        
+        while(!checkQueens() && !unsolvable)  {
+            queens[index].setColumn(queens[index].getColumn()+1);
+            
+            if(queens[index].getColumn() >= END_OF_BOARD){
+                queens[index].setRow(queens[index].getRow()+1);
+                queens[index].setColumn(1);
+                
+                while(queens[index].getRow() >= END_OF_BOARD){
+                    moveMinutePiece(index-1);
+                    queens[index].setRow(queens[index - 1].getRow());
+                    queens[index].setColumn(queens[index - 1].getColumn() + 1);
+                }
+            }
+            
+            
+            String board_row = "";
+            boolean piece_located = false;
+            for(int row = 1; row <= numberofqueens; row++){
+                for(int col = 1; col <= numberofqueens; col++){
+                    for(int ind = 0; ind < numberofqueens; ind++){
+                        if(queens[ind].getColumn() == col
+                                && queens[ind].getRow() == row)
+                                
+                            piece_located = true;
+                    }
+                    
+                    if(piece_located){
+                        board_row += "1";
+                        piece_located = false;
+                    }
+                    else
+                        board_row += "0";
+                }
+                board_row += "\n";
+            }
+            
+            System.out.println(board_row);
+           // printQueenLocations();
+           Control.checkQueens();
+           Control.printQueenLocations();
+
+        }    
+    }// end of moveQueen_BruteForce
+    
+    private static void moveMinutePiece(int index){
+        //System.out.println("moveMinutePiece method");
+        if(index < 0){
+            unsolvable = true;
+            return;
+        }
+        
+        int END_OF_BOARD = numberofqueens+1;
+        queens[index].setColumn(queens[index].getColumn()+1);
+        
+        if(queens[index].getColumn() >= END_OF_BOARD){
+            queens[index].setRow(queens[index].getRow()+1);
+            queens[index].setColumn(1);
+            
+            while(queens[index].getRow() >= END_OF_BOARD){
+                
+                moveMinutePiece(index - 1);
+                if(index != 0){
+                    queens[index].setRow(queens[index - 1].getRow());
+                    queens[index].setColumn(queens[index - 1].getColumn() + 1);
+                    
+                }
+                if (queens[index].getColumn() == END_OF_BOARD) {
+    
+                    queens[index].setRow(queens[index].getRow() + 1);
+                    queens[index].setColumn(1);
+                }
+                }                
+            }
+        }
     
     /**
      * Method: checkQueens
@@ -77,9 +184,11 @@ public class Control {
      *         false - if one or more queens have one or more conflicts with 
      *                  other queens
      */
-    private boolean checkQueens(){
-        for(int index = 0; index < numberofqueens; index++)
+    private static boolean checkQueens(){
+        for(int index = 0; index < numberofqueens; index++){
+            queens[index].setValidLocal(0);
             checkCurrentQueen(index); 
+        }
         // end of for loop
         for(int index = 0; index < numberofqueens; index++){
             if(queens[index].getValidLocal() > 0)
@@ -102,7 +211,7 @@ public class Control {
      * @param
      * Returns: Nothing
      */
-    private void checkCurrentQueen(int current){
+    private static void checkCurrentQueen(int current){
         queens[current].setValidLocal(checkQueenHor(current)
                                         +checkQueenVer(current)
                                         +checkQueenDia(current));
@@ -117,7 +226,7 @@ public class Control {
      * @return  conflicts
      *          -the number of other queens on the same row as the current queen
      */
-    private int checkQueenHor(int current){
+    private static int checkQueenHor(int current){
         int conflicts = 0;
         
         for(int index = 0; index < numberofqueens; index++){
@@ -143,7 +252,7 @@ public class Control {
      *          -the number of other queens in the same column as the current
      *              queen
      */
-    private int checkQueenVer(int current){
+    private static int checkQueenVer(int current){
         int conflicts = 0;
         
         for(int index = 0; index < numberofqueens; index++){
@@ -168,7 +277,7 @@ public class Control {
      * @return conflicts
      *          -the number of other queens
      */
-    private int checkQueenDia(int current){
+    private static int checkQueenDia(int current){
         int conflicts = 0;
         
         for(int index = 0; index < numberofqueens; index++){
@@ -180,11 +289,18 @@ public class Control {
                 
                 double slope = (double)(row1-row2)/(double)(col1-col2);
                 
-                if(Math.abs(slope) == 1)
+                if((int)Math.abs(slope) == 1)
                     conflicts++;
             }// end of if statement
         }// end of for loop
         
         return conflicts;
     }// end of checkQueenDia
+    
+    private static void printQueenLocations(){
+        for(int index = 0; index < queens.length; index++){
+            System.out.print("Queen #" + index + ": ");
+            queens[index].printLocal();
+        }
+    }
 }// end of Control Class
