@@ -100,33 +100,28 @@ public class Control {
         int index = numberofqueens - 1;
         int END_OF_BOARD = numberofqueens+1;
         
-        while(!checkQueens() && !unsolvable)  {
-            queens[index].setColumn(queens[index].getColumn()+1);
+        while(!isSolved&& !unsolvable)  {
+            moveMinutePiece(index);
             
-            if(queens[index].getColumn() >= END_OF_BOARD){
-                queens[index].setRow(queens[index].getRow()+1);
-                queens[index].setColumn(1);
-                
-                while(queens[index].getRow() >= END_OF_BOARD){
-                    moveMinutePiece(index-1);
-                    queens[index].setRow(queens[index - 1].getRow());
-                    queens[index].setColumn(queens[index - 1].getColumn() + 1);
-                }
+            if(allDifRowsAndCols() && checkQueenDia()){
+                isSolved = true;
             }
         }    
     }// end of moveQueen_BruteForce
     
     
-    private static boolean allDifRows(){
+    private static boolean allDifRowsAndCols(){
         for(int index = 0; index < queens.length-1; index++){
             for(int check = index + 1; check < queens.length; check++){
                 if(queens[index].getRow() == queens[check].getRow())
                     return false;
+                else if(queens[index].getColumn()== queens[check].getColumn())
+                    return false;
             }
-        }
-        
+        }        
         return true;
     }
+
     private static void moveMinutePiece(int index){
         //System.out.println("moveMinutePiece method");
         if(index < 0){
@@ -270,15 +265,53 @@ public class Control {
                 int col1 = queens[current].getColumn();
                 int col2 = queens[index].getColumn();
                 
-                int change_x = row1-row2;
-                int change_y = col1-col2;
+                int q1 = row1-col1;
+                int q2 = row2-col2;
                 
-                if(Math.abs(change_x)==Math.abs(change_y))
+                if(q1==q2){
                     conflicts++;
+                }
+                
+                q1 = row1+col1;
+                q2 = row2+col2;
+                
+                if(q1==q2){
+                    conflicts++;
+                }
             }// end of if statement
         }// end of for loop
         
         return conflicts;
+    }// end of checkQueenDia
+    
+    private static boolean checkQueenDia(){
+        int conflicts = 0;
+        
+        for(int current = 0; current < numberofqueens-1; current++){
+            for(int index = current+1; index < numberofqueens; index++)
+            if(index != current){
+                int row1 = queens[current].getRow();
+                int row2 = queens[index].getRow();
+                int col1 = queens[current].getColumn();
+                int col2 = queens[index].getColumn();
+                
+                int q1 = row1-col1;
+                int q2 = row2-col2;
+                
+                if(q1==q2){
+                    return false;
+                }
+                
+                q1 = row1+col1;
+                q2 = row2+col2;
+                
+                if(q1==q2){
+                    return false;
+                }
+            }// end of if statement
+        }// end of for loop
+        
+        return true;
     }// end of checkQueenDia
     
     private static void printQueenLocations(){
