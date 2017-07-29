@@ -113,37 +113,20 @@ public class Control {
                     queens[index].setColumn(queens[index - 1].getColumn() + 1);
                 }
             }
-            
-            
-            String board_row = "";
-            boolean piece_located = false;
-            for(int row = 1; row <= numberofqueens; row++){
-                for(int col = 1; col <= numberofqueens; col++){
-                    for(int ind = 0; ind < numberofqueens; ind++){
-                        if(queens[ind].getColumn() == col
-                                && queens[ind].getRow() == row)
-                                
-                            piece_located = true;
-                    }
-                    
-                    if(piece_located){
-                        board_row += "1";
-                        piece_located = false;
-                    }
-                    else
-                        board_row += "0";
-                }
-                board_row += "\n";
-            }
-            
-            System.out.println(board_row);
-           // printQueenLocations();
-           Control.checkQueens();
-           Control.printQueenLocations();
-
         }    
     }// end of moveQueen_BruteForce
     
+    
+    private static boolean allDifRows(){
+        for(int index = 0; index < queens.length-1; index++){
+            for(int check = index + 1; check < queens.length; check++){
+                if(queens[index].getRow() == queens[check].getRow())
+                    return false;
+            }
+        }
+        
+        return true;
+    }
     private static void moveMinutePiece(int index){
         //System.out.println("moveMinutePiece method");
         if(index < 0){
@@ -166,7 +149,7 @@ public class Control {
                     queens[index].setColumn(queens[index - 1].getColumn() + 1);
                     
                 }
-                if (queens[index].getColumn() == END_OF_BOARD) {
+                if (queens[index].getColumn() >= END_OF_BOARD) {
     
                     queens[index].setRow(queens[index].getRow() + 1);
                     queens[index].setColumn(1);
@@ -287,9 +270,10 @@ public class Control {
                 int col1 = queens[current].getColumn();
                 int col2 = queens[index].getColumn();
                 
-                double slope = (double)(row1-row2)/(double)(col1-col2);
+                int change_x = row1-row2;
+                int change_y = col1-col2;
                 
-                if((int)Math.abs(slope) == 1)
+                if(Math.abs(change_x)==Math.abs(change_y))
                     conflicts++;
             }// end of if statement
         }// end of for loop
