@@ -103,25 +103,44 @@ public class Control {
         while(!isSolved&& !unsolvable)  {
             moveMinutePiece(index);
             
-            if(allDifRowsAndCols() && checkQueenDia()){
+            if(checkBruteForcePieces()){
                 isSolved = true;
             }
         }    
     }// end of moveQueen_BruteForce
     
     
-    private static boolean allDifRowsAndCols(){
+    private static boolean checkBruteForcePieces(){
         for(int index = 0; index < queens.length-1; index++){
             for(int check = index + 1; check < queens.length; check++){
                 if(queens[index].getRow() == queens[check].getRow())
                     return false;
                 else if(queens[index].getColumn()== queens[check].getColumn())
                     return false;
+                
+                int row1 = queens[index].getRow();
+                int row2 = queens[check].getRow();
+                int col1 = queens[index].getColumn();
+                int col2 = queens[check].getColumn();
+                
+                int q1 = row1-col1;
+                int q2 = row2-col2;
+                
+                if(q1==q2){
+                    return false;
+                }
+                
+                q1 = row1+col1;
+                q2 = row2+col2;
+                
+                if(q1==q2){
+                    return false;
+                }
             }
         }        
         return true;
     }
-
+    
     private static void moveMinutePiece(int index){
         //System.out.println("moveMinutePiece method");
         if(index < 0){
@@ -282,36 +301,6 @@ public class Control {
         }// end of for loop
         
         return conflicts;
-    }// end of checkQueenDia
-    
-    private static boolean checkQueenDia(){
-        int conflicts = 0;
-        
-        for(int current = 0; current < numberofqueens-1; current++){
-            for(int index = current+1; index < numberofqueens; index++)
-            if(index != current){
-                int row1 = queens[current].getRow();
-                int row2 = queens[index].getRow();
-                int col1 = queens[current].getColumn();
-                int col2 = queens[index].getColumn();
-                
-                int q1 = row1-col1;
-                int q2 = row2-col2;
-                
-                if(q1==q2){
-                    return false;
-                }
-                
-                q1 = row1+col1;
-                q2 = row2+col2;
-                
-                if(q1==q2){
-                    return false;
-                }
-            }// end of if statement
-        }// end of for loop
-        
-        return true;
     }// end of checkQueenDia
     
     private static void printQueenLocations(){
