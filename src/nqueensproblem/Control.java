@@ -69,6 +69,8 @@ public class Control {
         bruteForceMethod();
     }// end of solveNQueens
     
+    //========================Brute Force=======================================
+    
     private static void bruteForceMethod(){
         moveQueen_BruteForce();
         
@@ -107,39 +109,7 @@ public class Control {
                 isSolved = true;
             }
         }    
-    }// end of moveQueen_BruteForce
-    
-    
-    private static boolean checkBruteForcePieces(){
-        for(int index = 0; index < queens.length-1; index++){
-            for(int check = index + 1; check < queens.length; check++){
-                if(queens[index].getRow() == queens[check].getRow())
-                    return false;
-                else if(queens[index].getColumn()== queens[check].getColumn())
-                    return false;
-                
-                int row1 = queens[index].getRow();
-                int row2 = queens[check].getRow();
-                int col1 = queens[index].getColumn();
-                int col2 = queens[check].getColumn();
-                
-                int q1 = row1-col1;
-                int q2 = row2-col2;
-                
-                if(q1==q2){
-                    return false;
-                }
-                
-                q1 = row1+col1;
-                q2 = row2+col2;
-                
-                if(q1==q2){
-                    return false;
-                }
-            }
-        }        
-        return true;
-    }
+    }// end of moveQueen_BruteForce    
     
     private static void moveMinutePiece(int index){
         //System.out.println("moveMinutePiece method");
@@ -172,6 +142,42 @@ public class Control {
             }
         }
     
+    //=========================Iterative Repair=================================
+    
+    
+    //=======================Checking Algoritms=================================
+    
+        private static boolean checkBruteForcePieces(){
+        for(int index = 0; index < queens.length-1; index++){
+            for(int check = index + 1; check < queens.length; check++){
+                if(queens[index].getRow() == queens[check].getRow())
+                    return false;
+                else if(queens[index].getColumn()== queens[check].getColumn())
+                    return false;
+                
+                int row1 = queens[index].getRow();
+                int row2 = queens[check].getRow();
+                int col1 = queens[index].getColumn();
+                int col2 = queens[check].getColumn();
+                
+                int q1 = row1-col1;
+                int q2 = row2-col2;
+                
+                if(q1==q2){
+                    return false;
+                }
+                
+                q1 = row1+col1;
+                q2 = row2+col2;
+                
+                if(q1==q2){
+                    return false;
+                }
+            }
+        }        
+        return true;
+    }
+
     /**
      * Method: checkQueens
      * Purpose: goes through the array of queens to find out if the problem has
