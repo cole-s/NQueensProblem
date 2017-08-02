@@ -1,5 +1,6 @@
 package nqueensproblem;
 
+import java.util.Random;
 import java.util.Scanner;
 /**
  * Control Class handles all user interface interactions. Makes calls to Queens
@@ -74,7 +75,7 @@ public class Control {
     private static void bruteForceMethod(){
         moveQueen_BruteForce();
         
-        String board_row = "";
+        String board_row = "\n";
         boolean piece_located = false;
         for(int row = 1; row <= numberofqueens; row++){
             for(int col = 1; col <= numberofqueens; col++){
@@ -86,11 +87,11 @@ public class Control {
                 }
 
                 if(piece_located){
-                    board_row += "1";
+                    board_row += "1 ";
                     piece_located = false;
                 }
                 else
-                    board_row += "0";
+                    board_row += "0 ";
             }
             board_row += "\n";
         }
@@ -100,11 +101,11 @@ public class Control {
     
     private static void moveQueen_BruteForce(){
         int index = numberofqueens - 1;
-        int END_OF_BOARD = numberofqueens+1;
         
         while(!isSolved&& !unsolvable)  {
             moveMinutePiece(index);
-            
+           // printQueenLocations();
+            //System.out.println("\n");
             if(checkBruteForcePieces()){
                 isSolved = true;
             }
@@ -144,16 +145,78 @@ public class Control {
     
     //=========================Iterative Repair=================================
     
+    /**
+     * Method: setupQueens
+     * Purpose: creates a random board setup for the queens on a nxn board, 
+     *          where all the queens have different rows and columns
+     */
+    private static void setupQueens(){
+        int rows[] = new int[numberofqueens];
+        for(int index = 0; index < rows.length; index++){
+            rows[index] = index+1;
+        }// end of for loop;
+        
+        Random rand = new Random();
+        // placing the queens
+        for(int index = 0; index < queens.length; index++){
+            queens[index].setColumn(index + 1);
+            int rnd = -1;
+            while(rnd == -1 || rows[rnd] == -1){
+                rnd = rand.nextInt(rows.length);
+            }
+            queens[index].setRow(rows[rnd]);
+            
+            rows[rnd] = -1;
+        }
+    }// end of setupQueens
+    
+    /**
+     * Method: iterativeRepairAlgorithm
+     * Purpose: This method is the method called to execute
+     */
+    private static void iterativeRepairAlgorithm(){
+        setupQueens();
+    }// end of iterativeRepairAlgorithm
+    
+    /**
+     * 
+     * @param last_queen1
+     * @param last_queen2
+     */
+    private static void queensWithMostConflicts(int last_queen1, int last_queen2){
+        checkQueens();
+        
+    }// end of queenWithMostConflicts()
+    
+    /**
+     * 
+     * @param queen1
+     * @param queen2 
+     * @return
+     */
+    private static boolean swapQueenColumns(int current){
+        Queen temp = queens[current];
+        
+        return false;
+    }// end of swapQueenColumns
     
     //=======================Checking Algoritms=================================
     
-        private static boolean checkBruteForcePieces(){
+    /**
+     * Method: checkBruteForcePieces
+     * Purpose: to check the brute force algorithm current placement of pieces
+     *          is a solution to the N Queens problem
+     * @return true if solve
+     * @return false if not solved
+     */
+    private static boolean checkBruteForcePieces(){
         for(int index = 0; index < queens.length-1; index++){
             for(int check = index + 1; check < queens.length; check++){
-                if(queens[index].getRow() == queens[check].getRow())
+                if(queens[index].getRow() == queens[check].getRow()) // checks horizontal
                     return false;
-                else if(queens[index].getColumn()== queens[check].getColumn())
+                else if(queens[index].getColumn()== queens[check].getColumn()) // checks verticle
                     return false;
+                //end of if-elseif statements
                 
                 int row1 = queens[index].getRow();
                 int row2 = queens[check].getRow();
@@ -165,41 +228,29 @@ public class Control {
                 
                 if(q1==q2){
                     return false;
-                }
+                }// end of if statemement
                 
                 q1 = row1+col1;
                 q2 = row2+col2;
                 
                 if(q1==q2){
                     return false;
-                }
-            }
-        }        
+                } // end of if statement
+            }// end of for loop
+        }// end of for loop        
         return true;
-    }
+    }// end of checkBruteForcePieces
 
     /**
      * Method: checkQueens
      * Purpose: goes through the array of queens to find out if the problem has
      *          been solved
-     * @param
-     * @return true - if all queens are in a valid location
-     *         false - if one or more queens have one or more conflicts with 
-     *                  other queens
      */
-    private static boolean checkQueens(){
+    private static void checkQueens(){
         for(int index = 0; index < numberofqueens; index++){
             queens[index].setValidLocal(0);
             checkCurrentQueen(index); 
-        }
-        // end of for loop
-        for(int index = 0; index < numberofqueens; index++){
-            if(queens[index].getValidLocal() > 0)
-                return false;
-            // end of if statement
-        } // end of for loop
-        
-        return true;
+        }// end of for loop
     }// end of checkQueens
     
     /**
@@ -309,6 +360,7 @@ public class Control {
         return conflicts;
     }// end of checkQueenDia
     
+    //Debug method, not needed for solution
     private static void printQueenLocations(){
         for(int index = 0; index < queens.length; index++){
             System.out.print("Queen #" + index + ": ");
