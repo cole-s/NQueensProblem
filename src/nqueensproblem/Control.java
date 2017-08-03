@@ -11,7 +11,7 @@ import java.util.Scanner;
  */
 public class Control {
     private static Queen queens[]; // array of n queens on nxn board
-    private static boolean isSolved = false; // is the problem solved
+    private static boolean is_solved = false; // is the problem solved
     private static boolean unsolvable = false; // is the problem solvable
     private static int numberofqueens; // total number of queens and board size
     
@@ -67,14 +67,12 @@ public class Control {
      * Returns: Nothing
      */
     public static void solveNQueens(){
-        bruteForceMethod();
+       // bruteForceMethod();
+        System.out.println("\n\nIterative Repair: \n");
+        iterativeRepairAlgorithm();
     }// end of solveNQueens
     
-    //========================Brute Force=======================================
-    
-    private static void bruteForceMethod(){
-        moveQueen_BruteForce();
-        
+    private static void printBoard(){
         String board_row = "\n";
         boolean piece_located = false;
         for(int row = 1; row <= numberofqueens; row++){
@@ -97,17 +95,24 @@ public class Control {
         }
 
         System.out.println(board_row);
+    }
+    
+    //========================Brute Force=======================================
+    
+    private static void bruteForceMethod(){
+        moveQueen_BruteForce();
+        printBoard();
     }// end of bruteForceMethod
     
     private static void moveQueen_BruteForce(){
         int index = numberofqueens - 1;
         
-        while(!isSolved&& !unsolvable)  {
+        while(!is_solved&& !unsolvable)  {
             moveMinutePiece(index);
            // printQueenLocations();
             //System.out.println("\n");
             if(checkBruteForcePieces()){
-                isSolved = true;
+                is_solved = true;
             }
         }    
     }// end of moveQueen_BruteForce    
@@ -174,30 +179,107 @@ public class Control {
      * Method: iterativeRepairAlgorithm
      * Purpose: This method is the method called to execute
      */
-    private static void iterativeRepairAlgorithm(){
+    private static void iterativeRepairAlgorithm() throws IndexOutOfBoundsException{
+        // reseting global booleans
+        is_solved = false;
+        unsolvable = false;
+        
+        // setting up board
         setupQueens();
+        
+        // setting up basic varibles for method
+        int last_queen = -1;
+        int err_queen = -1;
+        int move_queen = 0;
+        
+        // solving the N Queens problem main loop
+        while(!is_solved){
+            move_queen = queenWithMostConflicts(last_queen, err_queen);
+            if(move_queen == -1){
+               move_queen = last_queen != -1 ? last_queen 
+                                    : (int)(Math.random()*numberofqueens + 1);
+            }
+            if(swapQueenRows(move_queen)){
+                last_queen = move_queen;
+                err_queen = -1;
+            } else {
+                if(err_queen == -1)
+                    err_queen = move_queen;
+                else{
+                    setupQueens();
+                    err_queen = -1;
+                }
+            }
+            //printBoard();
+        }// end of while loop
+        
+        printBoard(); 
     }// end of iterativeRepairAlgorithm
     
     /**
      * 
-     * @param last_queen1
-     * @param last_queen2
+     * @param last_queen
+     * @param err_queen
+     * @return
      */
-    private static void queensWithMostConflicts(int last_queen1, int last_queen2){
-        checkQueens();
+    private static int queenWithMostConflicts(int last_queen, int err_queen){
+        is_solved = checkQueens(); 
         
+        int most_conflicts = 0;
+        int move_queen = -1;
+                
+        if(!is_solved){            
+            for(int index = 0; index < queens.length; index++){
+                   if((index != last_queen && index != err_queen)
+                           && queens[index].getConflicts() >= most_conflicts){
+                       most_conflicts = queens[index].getConflicts();
+                       move_queen = index;
+                   }// end of if statement
+            }// end of for loop
+        }// end of if statement
+        
+        return move_queen;
     }// end of queenWithMostConflicts()
     
     /**
      * 
-     * @param queen1
-     * @param queen2 
-     * @return
+     * @param int current - index of the current queen with the most conflicts in 
+     *                  the array of queens
+     * @return boolean
      */
-    private static boolean swapQueenColumns(int current){
-        Queen temp = queens[current];
+    private static boolean swapQueenRows(int current){
+        // setting base varibles for method
+       int old_row = queens[current].getRow();
+       int new_row = 0;
+       int high_conflicts = queens[current].getConflicts();
+       boolean changed = false;
         
-        return false;
+       // finding square in column with least amount of conflicts
+        for(int row = 1; row < numberofqueens; row++){
+            queens[current].setRow(row);
+            checkCurrentQueen(current);
+            
+            if(queens[current].getConflicts() < high_conflicts){
+                high_conflicts = queens[current].getConflicts();
+                new_row = row;
+                changed = true;                
+            }// end of if statement
+            else if(queens[current].getConflicts() == high_conflicts){
+                int rnd = (int) Math.random() * 2;
+                if(rnd == 1){
+                    high_conflicts = queens[current].getConflicts();
+                    new_row = row;
+                    changed = true;
+                }
+            }
+        }// end of for loop
+        
+        if(changed)
+            queens[current].setRow(new_row);
+        else
+            queens[current].setRow(old_row);
+        
+        return changed;
     }// end of swapQueenColumns
     
     //=======================Checking Algoritms=================================
@@ -246,11 +328,16 @@ public class Control {
      * Purpose: goes through the array of queens to find out if the problem has
      *          been solved
      */
-    private static void checkQueens(){
+    private static boolean checkQueens(){
+        boolean solved = true;
         for(int index = 0; index < numberofqueens; index++){
-            queens[index].setValidLocal(0);
+            queens[index].setConflicts(0);
             checkCurrentQueen(index); 
+            if(queens[index].getConflicts() > 0)
+                solved = false;
         }// end of for loop
+        
+        return solved;
     }// end of checkQueens
     
     /**
@@ -266,7 +353,7 @@ public class Control {
      * Returns: Nothing
      */
     private static void checkCurrentQueen(int current){
-        queens[current].setValidLocal(checkQueenHor(current)
+        queens[current].setConflicts(checkQueenHor(current)
                                         +checkQueenVer(current)
                                         +checkQueenDia(current));
     }// end of checkCurrentQueen
