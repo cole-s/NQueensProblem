@@ -71,24 +71,23 @@ public class Control {
      * Returns: Nothing
      */
     public static void solveNQueens(){
-        for(time_array_index = 0; time_array_index < brute_force_times.length; time_array_index++){
+//        for(time_array_index = 0; time_array_index < brute_force_times.length; time_array_index++){
             bruteForceMethod();
             is_solved = false;
-        }
+//        }
         System.out.println("Iterative Repair: \n");
-        for(time_array_index = 0; time_array_index < iterative_repair_times.length; time_array_index++){
+//        for(time_array_index = 0; time_array_index < iterative_repair_times.length; time_array_index++){
             iterativeRepairAlgorithm();
             is_solved = false;
-        }
+//        }
         
         long brute_avg = 0;
         int iterative_avg = 0;
         
-        for(time_array_index = 0; time_array_index < 100; time_array_index++){
-            brute_avg += brute_force_times[time_array_index];
-//            System.out.println(brute_avg);
-            iterative_avg += iterative_repair_times[time_array_index];
-        }
+//        for(time_array_index = 0; time_array_index < 100; time_array_index++){
+//            brute_avg += brute_force_times[time_array_index];
+//            iterative_avg += iterative_repair_times[time_array_index];
+//        }
         
         System.out.println("Brute force averge time: "+(brute_avg/100));
         System.out.println("Iterative Repair average time: "+(iterative_avg/100));
@@ -131,10 +130,9 @@ public class Control {
         long time = System.nanoTime();
         moveQueen_BruteForce();
         long est_time = System.nanoTime()-time;
-        brute_force_times[time_array_index] = est_time;
+//        brute_force_times[time_array_index] = est_time;
 //        time_array_index++;
-//        System.out.println("Time for brute force: "+(System.nanoTime()-time)
-//                            +" nanoseconds");
+        System.out.println("Time for brute force: "+est_time+" nanoseconds");
         //printBoard();
     }// end of bruteForceMethod
     
@@ -251,8 +249,8 @@ public class Control {
 //        printBoard(); 
         long est_time = System.nanoTime()-time;
         
-//        System.out.println("Iterative Repair time: "+est_time+" nanoseconds");
-        iterative_repair_times[time_array_index] = est_time;
+        System.out.println("Iterative Repair time: "+est_time+" nanoseconds");
+//        iterative_repair_times[time_array_index] = est_time;
     }// end of iterativeRepairAlgorithm
     
     /**
