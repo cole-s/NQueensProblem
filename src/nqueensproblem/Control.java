@@ -14,6 +14,9 @@ public class Control {
     private static boolean is_solved = false; // is the problem solved
     private static boolean unsolvable = false; // is the problem solvable
     private static int numberofqueens; // total number of queens and board size
+    private static int time_array_index = 0;
+    private static long[] brute_force_times = new long[100];
+    private static long[] iterative_repair_times = new long[100];
     
     /**
      * Method: getNQueens
@@ -29,8 +32,9 @@ public class Control {
             try{
                 System.out.print("Please enter the number of "
                         + "queens greater than 3: ");
-                input = kin.next();
-                num = Integer.parseInt(input.trim());                
+                input = kin.next().trim();  
+                
+                num = Integer.parseInt(input);                
                 
             if(num <=3) // if num was not high enough
                 System.out.println("Number too low.");
@@ -67,9 +71,27 @@ public class Control {
      * Returns: Nothing
      */
     public static void solveNQueens(){
-       // bruteForceMethod();
-        System.out.println("\n\nIterative Repair: \n");
-        iterativeRepairAlgorithm();
+        for(time_array_index = 0; time_array_index < brute_force_times.length; time_array_index++){
+            bruteForceMethod();
+            is_solved = false;
+        }
+        System.out.println("Iterative Repair: \n");
+        for(time_array_index = 0; time_array_index < iterative_repair_times.length; time_array_index++){
+            iterativeRepairAlgorithm();
+            is_solved = false;
+        }
+        
+        long brute_avg = 0;
+        int iterative_avg = 0;
+        
+        for(time_array_index = 0; time_array_index < 100; time_array_index++){
+            brute_avg += brute_force_times[time_array_index];
+//            System.out.println(brute_avg);
+            iterative_avg += iterative_repair_times[time_array_index];
+        }
+        
+        System.out.println("Brute force averge time: "+(brute_avg/100));
+        System.out.println("Iterative Repair average time: "+(iterative_avg/100));
     }// end of solveNQueens
     
     private static void printBoard(){
@@ -98,10 +120,22 @@ public class Control {
     }
     
     //========================Brute Force=======================================
-    
+    private static void resetQueens(){
+        for(int index=0; index < numberofqueens; index++){
+            queens[index].setRow(1);             
+            queens[index].setColumn(index+1); // sets queens in rows 1-N
+        }// end of for loop
+    }
     private static void bruteForceMethod(){
+        resetQueens();
+        long time = System.nanoTime();
         moveQueen_BruteForce();
-        printBoard();
+        long est_time = System.nanoTime()-time;
+        brute_force_times[time_array_index] = est_time;
+//        time_array_index++;
+//        System.out.println("Time for brute force: "+(System.nanoTime()-time)
+//                            +" nanoseconds");
+        //printBoard();
     }// end of bruteForceMethod
     
     private static void moveQueen_BruteForce(){
@@ -109,8 +143,6 @@ public class Control {
         
         while(!is_solved&& !unsolvable)  {
             moveMinutePiece(index);
-           // printQueenLocations();
-            //System.out.println("\n");
             if(checkBruteForcePieces()){
                 is_solved = true;
             }
@@ -168,11 +200,11 @@ public class Control {
             int rnd = -1;
             while(rnd == -1 || rows[rnd] == -1){
                 rnd = rand.nextInt(rows.length);
-            }
+            }// end of while loop
             queens[index].setRow(rows[rnd]);
             
             rows[rnd] = -1;
-        }
+        }// end of for loop
     }// end of setupQueens
     
     /**
@@ -190,30 +222,37 @@ public class Control {
         // setting up basic varibles for method
         int last_queen = -1;
         int err_queen = -1;
-        int move_queen = 0;
+        int move_queen = 0;        
         
+        // Timing variable
+        long time = System.nanoTime();
         // solving the N Queens problem main loop
         while(!is_solved){
             move_queen = queenWithMostConflicts(last_queen, err_queen);
-            if(move_queen == -1){
-               move_queen = last_queen != -1 ? last_queen 
-                                    : (int)(Math.random()*numberofqueens + 1);
-            }
-            if(swapQueenRows(move_queen)){
-                last_queen = move_queen;
-                err_queen = -1;
-            } else {
-                if(err_queen == -1)
-                    err_queen = move_queen;
-                else{
-                    setupQueens();
+            if(!is_solved){
+                if(move_queen == -1){
+                   move_queen = last_queen != -1 ? last_queen 
+                                      : (int)(Math.random()*numberofqueens + 1);
+                }
+                if(swapQueenRows(move_queen)){
+                    last_queen = move_queen;
                     err_queen = -1;
+                } else {
+                    if(err_queen == -1)
+                        err_queen = move_queen;
+                    else{
+                        setupQueens();
+                        err_queen = -1;
+                    }
                 }
             }
-            //printBoard();
         }// end of while loop
+
+//        printBoard(); 
+        long est_time = System.nanoTime()-time;
         
-        printBoard(); 
+//        System.out.println("Iterative Repair time: "+est_time+" nanoseconds");
+        iterative_repair_times[time_array_index] = est_time;
     }// end of iterativeRepairAlgorithm
     
     /**
@@ -228,13 +267,20 @@ public class Control {
         int most_conflicts = 0;
         int move_queen = -1;
                 
-        if(!is_solved){            
+        if(!is_solved){     // only tries this when the board is not solved       
             for(int index = 0; index < queens.length; index++){
                    if((index != last_queen && index != err_queen)
-                           && queens[index].getConflicts() >= most_conflicts){
+                           && queens[index].getConflicts() > most_conflicts){
                        most_conflicts = queens[index].getConflicts();
                        move_queen = index;
-                   }// end of if statement
+                   } else if((index != last_queen && index != err_queen)
+                           && queens[index].getConflicts() == most_conflicts){
+                       int rnd = (int) Math.random()*2;
+                       if(rnd == 1){
+                           most_conflicts = queens[index].getConflicts();
+                           move_queen = index;
+                       }// end of if statement
+                   }// end of if-else if statement
             }// end of for loop
         }// end of if statement
         
