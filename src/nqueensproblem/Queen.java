@@ -12,6 +12,10 @@ public class Queen {
                             // 0 for yes and anything else is # of conflicts
                             // with placement
     
+    /**
+     * Method: Queen
+     * Purpose: Constructor for the Queen class and assigns default values
+     */
     public Queen(){
         row = 1;
         column = 0;
@@ -31,9 +35,14 @@ public class Queen {
     public int getConflicts(){ return conflicts; }
     public void setConflicts(int con) { conflicts = con; }
     
+    /**
+     * Method: printLocal
+     * Purpose: prints the queen's current position and number of conflicts 
+     *          for easier debugging
+     */
     public void printLocal(){
         System.out.println("[" + row + ", " + column + "]" 
                 + "Conflicts: " + conflicts);
-    }
+    }// end of printLocal
 
 } // end of Queen Class

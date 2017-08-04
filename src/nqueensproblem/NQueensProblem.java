@@ -14,6 +14,5 @@ public class NQueensProblem {
         // TODO code application logic here
         Control.getNQueens();
         Control.solveNQueens();
-    }
-    
-}
+    }// end of main    
+}// end of NQueensProblem
