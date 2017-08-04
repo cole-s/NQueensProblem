@@ -335,14 +335,14 @@ public class Control {
             checkCurrentQueen(current); // checks new position
             
             if(queens[current].getConflicts() < high_conflicts){
-                // if the current queen placement has less conflicts 
-                // than other position
+            // if the current queen placement has less conflicts 
+            // than other position
                 high_conflicts = queens[current].getConflicts();
                 new_row = row;
                 changed = true;                
             }// end of if statement
             else if(queens[current].getConflicts() == high_conflicts){
-                // current queen matches another queen's total number of conflicts
+            // current queen matches another queen's total number of conflicts
                 int rnd = (int) Math.random() * 2; // random number
                 if(rnd == 1){ // to randomly select a piece to move
                     high_conflicts = queens[current].getConflicts();
@@ -431,9 +431,8 @@ public class Control {
      *                  all queens are in a position that is not valid
      *              -Method will be broken up into three parts to check
      *                  a) rows
-     *                  b) columns
-     *                  c) diagonals
-     * @param
+     *                  b) diagonals
+     * @param current - index of the queen being checked
      * Returns: Nothing
      */
     private static void checkCurrentQueen(int current){
