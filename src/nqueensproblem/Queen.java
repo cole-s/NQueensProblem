@@ -8,9 +8,8 @@ package nqueensproblem;
 public class Queen {
     private int row; // stores row value of Queen
     private int column; // stores collumn value of Queen
-    private int conflicts; //is a valid location boolean for Queen object
-                            // 0 for yes and anything else is # of conflicts
-                            // with placement
+    private int conflicts; // holds the number of conflicts with other queens
+                            // based on row and column values
     
     /**
      * Method: Queen
@@ -22,7 +21,7 @@ public class Queen {
         conflicts = 0;
     }// end of Constructor
     
-    /**
+    /*
      * Getters and Setters for the private variables in the Queen class
      * 
      * Parameters for setters are integers and booleans

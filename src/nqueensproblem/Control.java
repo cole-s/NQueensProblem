@@ -268,9 +268,9 @@ public class Control {
                 }// end of if-else statements
             }// end of if statement
         }// end of while loop
-        printBoard(); // prints the current board
         long est_time = System.nanoTime()-time; // total time for algorithm        
         System.out.println("Iterative Repair time: "+est_time+" nanoseconds");
+        printBoard(); // prints the current board        
     }// end of iterativeRepairAlgorithm
     
     /**
